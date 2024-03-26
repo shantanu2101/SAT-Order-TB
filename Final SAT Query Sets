@@ -1,5 +1,5 @@
 {
-    "name": "SAT Orders Stage 1",
+    "name": "SAT Orders Stage 2",
     "version": "1",
     "exportPrompts": [
         ""
@@ -9,55 +9,162 @@
     "pipeline": {
         "context": {
             "generalAppellantContext": {
-                "group": "Independent Contexts",
+                "group": "Contexts",
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "From the order given as input, identify all the appeals involved in the order. For each appeal, identify the appeal number and the name of all the Appellant(s) (assign each Appellant of an appeal a number for e.g. Appellant 1, Appellant 2, etc). Do not confuse between names of Appellants and Respondents. Ensure you identify every single appeal that is present in the cause-title of the document and that you don't miss a single appeal. Only look at the cause-title of the order. Do not look at any other part of it. If there is a contradiction between the cause-title and any other text in the order, only extract the data in the cause-title. Ensure you do not consider any other part of the order except the introductory cause-title.",
+                        "text": "From the order given as <document>, identify all the appeals involved in the order. For each appeal, identify the appeal number and the name of all the Appellant(s) (assign each Appellant of an appeal a number for e.g. Appellant 1, Appellant 2, etc). Do not confuse between names of Appellants and Respondents. Ensure you identify every single appeal that is present in the cause-title of the document and that you don't miss a single appeal. Only look at the cause-title of the order. Do not look at any other part of it. If there is a contradiction between the cause-title and any other text in the order, only extract the data in the cause-title. Ensure you do not consider any other part of the order except the introductory cause-title.",
                         "visible": false,
                         "systemPrompt": "You are an expert at reading court judgements and identifying the parties involved in the document. You will be given a document, from which you need to identify the appeal numbers and the Appellants involved. Each document will broadly have two sections. A cause-title which states the metadata of the case, like the case numbers, the party names, their advocates, etc. This will always be at the start of the document. This will be followed by the body, which states the main judgement by the court. The body will be the largest part of the document. Restrict your responses to the given document and don’t rely on any other knowledge."
                     },
                     {
-                        "text": "Present the input information in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Appellant(s): [Appellant Name] (Appellant Number), [Appellant Name] (Appellant Number); 2. Appeal No. [Number] of [Year] - Appellant(s): [Appellant Name] (Appellant Number), [Appellant Name] (Appellant Number);'. The final output should be only the numbered list and nothing else.",
+                        "text": "Present the <document> information in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Appellant(s): [Appellant Name] (Appellant Number), [Appellant Name] (Appellant Number); 2. Appeal No. [Number] of [Year] - Appellant(s): [Appellant Name] (Appellant Number), [Appellant Name] (Appellant Number);'. The final output should be only the numbered list and nothing else.",
                         "visible": true,
                         "displayQuery": "Details of Appellants involved in the Appeals"
                     }
                 ]
             },
-            "generalRespondentContext": {
-                "group": "Independent Contexts",
+            "generalAppellantAdvocateContext": {
+                "group": "Dependent Contexts",
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "From the order given as input, identify all the appeals involved in the order. For each appeal, identify the appeal number and the name of all the Respondent(s) (assign each Respondent of an appeal a number for e.g. Respondent 1, Respondent 2, etc). Do not confuse between names of Appellants and Respondents. Ensure you identify every single appeal that is present in the cause-title of the document and that you don't miss a single appeal. Only look at the cause-title of the order. Do not look at any other part of it. If there is a contradiction between the cause-title and any other text in the order, only extract the data in the cause-title. Ensure you do not consider any other part of the order except the introductory cause-title.",
+                        "text": "<Document> states the text of the order delivered by Appellate Tribunal. <context0> states all the appeal numbers and their Appellants with Appellant number involved in the order. For each appeal, identify the lead advocate representing each of the Appellants. The lead advocate is the advocate mentioned first in the list of advocates. For such Appellants for which there is no explicit Advocate present in the <Document>, record that this information is not provided.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the parties involved in the document. You will be given a document, from which you need to identify the first Advocate mentioned of each Appellant involved in each appeal (ignore the orher advocates mentioned). Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states all the appeal numbers and their Appellants with their Appellant number. The <Data> states name of Advocate of each Appellant. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Appellant(s): (i) [Appellant Name] (Appellant Number) Advocate: [Name of Advocate], (ii) [Appellant Name] (Appellant Number) Advocate: [Name of Advocate]; 2. Appeal No. [Number] of [Year] - Appellant(s): (i) [Appellant Name] (Appellant Number) Advocate: [Name of Advocate], (ii) [Appellant Name] (Appellant Number) Advocate: [Name of Advocate];'. Ensure that advocate is specifically listed for each Appellant, even if it is same as that of a previous Appellant. The final output should be only the numbered list and nothing else.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Details of Advocate of Appellants involved in the Appeals"
+                    }
+                ]
+            },
+            "generalRespondentContext": {
+                "group": "Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "From the order given as <document>, identify all the appeals involved in the order. For each appeal, identify the appeal number and the name of all the Respondent(s) (assign each Respondent of an appeal a number for e.g. Respondent 1, Respondent 2, etc). Do not confuse between names of Appellants and Respondents. Ensure you identify every single appeal that is present in the cause-title of the document and that you don't miss a single appeal. Only look at the cause-title of the order. Do not look at any other part of it. If there is a contradiction between the cause-title and any other text in the order, only extract the data in the cause-title. Ensure you do not consider any other part of the order except the introductory cause-title.",
                         "visible": false,
                         "systemPrompt": "You are an expert at reading court judgements and identifying the parties involved in the document. You will be given a document, from which you need to identify the appeal numbers and the Respondents involved. Each document will broadly have two sections. A cause-title which states the metadata of the case, like the case numbers, the party names, their advocates, etc. This will always be at the start of the document. This will be followed by the body, which states the main judgement by the court. The body will be the largest part of the document. Restrict your responses to the given document and don’t rely on any other knowledge."
                     },
                     {
-                        "text": "Present the input information in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Respondent(s): [Respondent Name] (Respondent Number), [Respondent Name] (Respondent Number); 2. Appeal No. [Number] of [Year] - Respondent(s): [Respondent Name] (Respondent Number), [Respondent Name] (Respondent Number);'. The final output should be only the numbered list and nothing else.",
+                        "text": "Present the <document> information in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Respondent(s): [Respondent Name] (Respondent Number), [Respondent Name] (Respondent Number); 2. Appeal No. [Number] of [Year] - Respondent(s): [Respondent Name] (Respondent Number), [Respondent Name] (Respondent Number);'. The final output should be only the numbered list and nothing else.",
                         "visible": true,
                         "displayQuery": "Details of Respondents involved in the Appeals"
                     }
                 ]
             },
-            "orderContext": {
-                "group": "Independent Contexts",
+            "generalRespondentAdvocateContext": {
+                "group": "Dependent Contexts",
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "For the given order as input, record the following if and only if explicitly mentioned in the input: (1) date of hearing, (2) date order was reserved, and (3) date of order. In situations where you don’t find any of these dates explicitly mentioned in the input, record that the information was not provided. Present the input information in a numbered list following this format: '1. Date of Hearing - [Date of hearing dd/mm/yyyy], 2. Date order was reserved - [Date order was reserved dd/mm/yyyy], 3. Date of order - [Date of order dd/mm/yyyy].'",
+                        "text": "<Document> states the text of the order delivered by Appellate Tribunal. <context0> states all the appeal numbers and their Respondents with Respondent number involved in the order. For each appeal, identify the lead advocate representing each of the Respondents. The lead advocate is the advocate mentioned first in the list of advocates. For such Respondents for which there is no explicit Advocate present in the <Document>, record that this information is not provided.",
+                        "visible": false,
+                        "context": [
+                            "generalRespondentContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the parties involved in the document. You will be given a document, from which you need to identify the first Advocate mentioned of each Respondent involved in each appeal (ignore the orher advocates mentioned). Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states all the appeal numbers and their Respondents with their Respondent number. The <Data> states name of Advocate of each Respondent. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal No. [Number] of [Year] - Respondent(s): (i) [Respondent Name] (Respondent Number) Advocate: [Name of Advocate], (ii) [Respondent Name] (Respondent Number) Advocate: [Name of Advocate]; 2. Appeal No. [Number] of [Year] - Respondent(s): (i) [Respondent Name] (Respondent Number) Advocate: [Name of Advocate], (ii) [Respondent Name] (Respondent Number) Advocate: [Name of Advocate];'. Ensure that advocate is specifically listed for each Respondent, even if it is same as that of a previous Respondent. The final output should be only the numbered list and nothing else.",
+                        "context": [
+                            "generalRespondentContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Details of Advocate of Respondents involved in the Appeals"
+                    }
+                ]
+            },
+            "orderContext": {
+                "group": "Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "For the given order as <document>, record the following if and only if explicitly mentioned in the <document>: (1) date of hearing, (2) date order was reserved, and (3) date of order. In situations where you don’t find any of these dates explicitly mentioned in the <document>, record that the information was not provided. Present the <document> information in a numbered list following this format: '1. Date of Hearing - [Date of hearing dd/mm/yyyy], 2. Date order was reserved - [Date order was reserved dd/mm/yyyy], 3. Date of order - [Date of order dd/mm/yyyy].'",
                         "visible": true,
                         "displayQuery": "Dates of the SAT order",
                         "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify few details of the judgement. Restrict your responses to the given document and don’t rely on any other knowledge."
                     }
                 ]
             },
-            "tribunalCompContext": {
-                "group": "Independent Contexts",
+            "companyNameContext": {
+                "group": "Dependent Contexts",
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "The input is an order by the Securities Appellate Tribunal. I want you to find the CORAM of the order and return the name of all the members in the CORAM and their desgination: Presiding Officer, Judicial Member, Member. Also identify the input order is Per which officer, indicate their name and designation. If the input order also has a second opinion, or part, written by another officer, record that it has a dissenting opinion, and mention the name and designation of the officer who wrote the dissenting opinion. Otherwise record that there is no dissenting opinion.",
+                        "text": "<context0> states all the appeal numbers involved in the <document> order. I want you to identify all the companies, in relation to which, or in relation to whose shares or securities, allegations were raised that corresponds to each of these appeal numbers. If the <document> order only mentions one such company, then put that company for all the appeals with their numbers. For such appeals for which there is no explicit company present in the <document>, record that this information is not provided.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the company in relation to which the appeals involved in the judgement were filed. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers. The <Data> states name of Company of each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number] of [Year]: Company - [Name of the company]; 2. Appeal [Number] of [Year]: Company - [Name of the company];'. Ensure that Company is specifically listed for each appeal, even if it is same as that in a previous appeal. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "visible": true,
+                        "displayQuery": "Details of the Company involved",
+                        "context": [
+                            "generalAppellantContext"
+                        ]
+                    }
+                ]
+            },
+            "showCauseNoticeContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulate",
+                "queries": [
+                    {
+                        "text": "<document> is an order by an Appellate Court. The <document> will state the procedural history of the matter including the notices issued, previous decisions, etc. Identify only the details of the show cause notices issued along with the appeal numbers in which they were issued. These notices may also be refered to as SCNs in the <document>. Don't extract any other information other than the dates of show cause notices, and the appeal numbers in which they were issued.",
+                        "visible": false,
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the date of show cause notice sent to the Appellants involved in the judgement. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "The <Data> states the information about notices issued. For each of the appeals in <context0>, identify the date on which the show cause notice was issued. If the <Data> does not state information about specific appeal numbers, state the show cause notice date for all the appeal numbers as mentioned in <context0> along with the corresponding appeal numbers.",
+                        "visible": true,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "displayQuery": "Details of Show Cause notices"
+                    }
+                ]
+            },
+            "impugnedOrderContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<context0> states all the appeal numbers involved in the <document> order. I want you to identify the date and writer of the impugned orders that have been appealed in the <doucment>. The writer of the impugned order can be Adjucating Officer (AO) or Whole Time Member (WTM). Do not confuse date of impugned order with any other date(s). It may be the case that there is only 1 impugned order for all the appeals. But it may be the case that there are different impugned orders for different set of appeals. For such appeals for which there is no explicit impugned order date present in the <document>, record that this information is not provided. State the date and writer of the impugned order for all the appeals mentioned in <context0> along with the appeal numbers.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the details of impugned orders which are challenged in the appeals involved in the judgement. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers. The <Data> states date and writer of impugned order of each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number] of [Year]: Impugned order date - [Impugned order date dd/mm/yyyy], Writer of impugned order - [AO/WTM]; 2. Appeal [Number] of [Year]: Impugned order date - [Impugned order date dd/mm/yyyy], Writer of impugned order - [AO/WTM];'. Ensure that impugned order date and writer of impugned order is specifically listed for each appeal, even if it is same as that in a previous appeal. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "visible": true,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "displayQuery": "Details of Impugned Orders"
+                    }
+                ]
+            },
+            "tribunalCompContext": {
+                "group": "Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "The <document> is an order by the Securities Appellate Tribunal. I want you to find the CORAM of the order and return the name of all the members in the CORAM and their desgination: Presiding Officer, Judicial Member, Member. Also identify the <document> order is Per which officer, indicate their name and designation. If the <document> order also has a second opinion, or part, written by another officer, record that it has a dissenting opinion, and mention the name and designation of the officer who wrote the dissenting opinion. Otherwise record that there is no dissenting opinion.",
                         "visible": true,
                         "displayQuery": "Details of CORAM",
                         "systemPrompt": "You are an expert at reading court judgements and identifying the officers who delivered the judgement. You will be given a document, from which you need to identify the names and designation of the officers who delivered the judgement. Restrict your responses to the given document and don’t rely on any other knowledge."
@@ -65,7 +172,7 @@
                 ]
             },
             "precedentContext": {
-                "group": "Independent Contexts",
+                "group": "Contexts",
                 "mode": "accumulateClaude",
                 "queries": [
                     {
@@ -77,6 +184,127 @@
                         "text": "Present the <Data> as it is strictly in this manner: 'Here is a list of precedents or pervious judgements 1. [Name of the precedent or previous judgment]: Delivered by - [which judicial body decided the precedent or previous judgment], Mentioned by [who mentioned it Tribunal/Counsel for Appellant/Counsel for Respondent], 2. [Name of the precedent or previous judgment]: Delivered by - [which judicial body decided the precedent or previous judgment], Mentioned by [who mentioned it Tribunal/Counsel for Appellant/Counsel for Respondent];'. The final output should be only the numbered list and nothing else.",
                         "visible": true,
                         "displayQuery": "Details of cited precedents"
+                    }
+                ]
+            },
+            "dispositionAppealContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "I want you to identify if the input states explicit mention for the following information for each appeal mentioned in <context0>: whether the appeal was withdrawn and if a fresh appeal was filed, whether the impugned order was quashed or not, whether there had been any delay in filing the appeal or appeals involved in this input order, and whether such delay was condoned. State these information as explicitly mentioned in the input, do not draw any inferences. For such appeal(s) for which there is no explicit information present in the input as asked above, record that this information is not provided. State all the appeal numbers mentioned in <context0> and their corresponding details or the absence of corresponding details.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and their disposal statuts. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "Present the input information as it is in a numbered list following this format broken by new lines: '1. Appeal [Number] of [Year]: Whether the appeal was withdrawn - [details], Whether fresh appeal was filed - [details], Whether there was delay in filing the appeal - [details], Whether delay was condoned - [details], Whether impugned order was quashed - [details];...' Produce the above information as you receive in the input. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "visible": true,
+                        "displayQuery": "Details of Appeals"
+                    }
+                ]
+            },
+            "appealStatusContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<document> is an order by an Appellate Court. You need to determine whether the document explicitly states whether the appeals were allowed, dismissed, remanded, or unclear. Sometimes it might partially allow, dismiss or remand the appeals. This is typically stated towards the end of the <document>. Identify for each appeal whether it was allowed, dismissed, remanded or unclear. If the document does not explicitly use the words 'allowed', 'dismissed' or 'remanded', then mark it as 'unclear'. Do not make inferences about the status of the appeal unless explicitly stated.",
+                        "visible": false,
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and their disposal status. Ensure that you strictly adhere to the instructions. If the instructions ask you to check whether something is explicitly stated, ensure your response does not try to infer anything from the document to answer the question. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "The <Data> states the information on the status of the appeals. For each of the appeals in <context0>, identify its status. If the <Data> does not state specific appeal numbers, mark each appeal number in <context0> with the same status.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Disposal status and Remand status of the appeals"
+                    }
+                ]
+            },
+            "reasonsContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<document> is an order by an Appellate Court. <context0> states all the appeal numbers involved in the <document>. I want you to identify and produce the reasons stated in the <document> for allowing the appeal for each appeal number mentioned in <context0>. If the appeal has been dismissed, just state that the appeal was dismissed and nothing else. Ensure that the reasons/dismissal are specifically listed for each appeal, even if they are the same as those in a previous appeal. State all the appeal numbers mentioned in <context0> and the reasons/dismissal.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and the reasons given by the Tribunal for allowing these appeals. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers. The <Data> states the reasons for allowing or dismissal of each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number] of [Year]: Reasons for allowing the appeal - [details]; 2. Appeal [Number] of [Year]: Reasons for allowing the appeal - [details];'. Ensure that the reasons are specifically listed for each appeal, even if they are the same as those in a previous appeal. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "visible": true,
+                        "displayQuery": "Reasons for allowing the Appeals"
+                    }
+                ]
+            },
+            "firstSanctionsContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<document> is an order by the Securities Appellate Tribunal. I want you to identify all the sanctions imposed and the relevant sections under which they were imposed by Adjudicating Officer (AO) or Whole Time Member (WTM) as stated in <document> that corresponds to each of the appeal numbers in <context0>. Sanctions can be penalty, disgorgement, debarment from access to capital markets, restraint from dealing in the securities of the relevant company, prohibition from holding directorship positions, impounding of bank accounts, or prohibition on disposal of assets. Penalty amount and Disgorgement amount may be payable jointly and severally and there can be more than 1 penalty imposed in an appeal. Capture all these details along with the relevant sanctions. Also find out if there is explicit mention that these Appellants had made a part payment of penalty for filing the appeal. Ignore the modified sanctions. Also ignore the reasons or the sections under which the sanctions were imposed given for the sanctions. Just capture the sanctions properly.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the sanctions that were imposed on the Appellants by the Adjudicating Officer (AO) or Whole Time Member (WTM). Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states sanctions details of each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Sanctions(s) - details, Part Penalty - [details], (ii) Appellant: [Appellant Name] (Appellant Number), Sanction(s) - details, Part Penalty - [details]; 2. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Sanctions(s) - details, Part Penalty - [details], (ii) Appellant: [Appellant Name] (Appellant Number), Sanction(s) - details, Part Penalty - [details];'. Ensure that Sanction(s) and part penalty are specifically listed for each appeal, even if they are the same as those in a previous appeal. Ensure that Sanction(s) and part penalty are specifically listed for each Appellant, even if they are the same as those for other Appellants. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Details of sanctions imposed by SEBI"
+                    }
+                ]
+            },
+            "sanctionsModContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<context0> states all the appeal numbers involved in the <document> order. I want you to identify the sanctions that were modified by Securities Appellate Tribunal (Tribunal) as stated in the <document> that corresponds to each of the appeal numbers in <context0>. State the modified sanctions as explicitly mentioned in the <document>, do not draw any inferences. Ignore the sanctions imposed by Adjudicating Officer (AO) or Whole Time Member (WTM). For such appeals for which there is no explicit mention of sanctions being modified, record that there is no explicit mention of sanctions being modified.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the modified sanctions that were imposed on the Appellants by the Securities Appellate Tribunal (SAT/Tribunal). Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states modfified sanctions details of each appeal. Using <context0> and the <Data>, identify and present the modified sanctions for each appellant of each appeal. Ensure that Modified Sanction(s) are specifically listed for each appeal, even if they are the same as those in a previous appeal. Ensure that Modified Sanction(s) are specifically listed for each Appellant, even if they are the same as those for other Appellants. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Details of sanctions imposed by SAT"
+                    }
+                ]
+            },
+            "costsContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "position": "footer",
+                "queries": [
+                    {
+                        "text": "Find out what the <document> says about order as to costs. Produce it verbatim from the <document> without making any inferences at your end.",
+                        "visible": false,
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the details of costs ordered by the Tribunal in each appeal. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states all the appeal numbers. The <Data> states the information about the costs imposed in these appeals. From this, create a list of all appeal numbers and the costs imposed in each of them. If the <Data> says 'no order as to costs', mark for each appeal that there is no order as to costs.",
+                        "visible": true,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "displayQuery": "Details of ordered costs"
                     }
                 ]
             }
