@@ -327,7 +327,7 @@
                     {
                         "text": "If the <Data> states the name of a company, just return the name and nothing else. But if there is no information mentioned in the <Data> or there is no name of the Company contained in the <Data>, just return 'Unclear' and nothing else.",
                         "visible": true,
-                        "displayQuery": "Company:"
+                        "displayQuery": "Name of Company"
                     }
                 ]
             },
@@ -832,7 +832,7 @@
                         "context": [
                             "tribunalCompContext"
                         ],
-                        "displayQuery": "Dissenting Opinion Written by"
+                        "displayQuery": "Dissenting Member"
                     }
                 ]
             },
@@ -849,7 +849,7 @@
                         "context": [
                             "precedentContext"
                         ],
-                        "displayQuery": "Does the Order cite prior SEBI Orders?",
+                        "displayQuery": "Order cites prior AO/WTM Orders",
                         "output": {
                             "type": "options",
                             "options": [
@@ -873,7 +873,7 @@
                         "context": [
                             "precedentContext"
                         ],
-                        "displayQuery": "Does the Order cite prior SAT Orders?",
+                        "displayQuery": "Order cites prior SAT Order",
                         "output": {
                             "type": "options",
                             "options": [
@@ -939,7 +939,7 @@
                             ]
                         },
                         "visible": false,
-                        "displayQuery": "Was a fresh appeal filed?"
+                        "displayQuery": "Filed Fresh Appeal"
                     }
                 ]
             },
@@ -1031,6 +1031,7 @@
                     }
                 ]
             },
+            
             "orderQuashing": {
                 "group": "Appeal withdrawn / allowed / remanded",
                 "mode": "chained",
@@ -1120,7 +1121,7 @@
                         "model": "claude",
                         "position": "none",
                         "visible": true,
-                        "displayQuery": "Appeal Partly Allowed?",
+                        "displayQuery": "Appeal Partly Allowed",
                         "output": {
                             "type": "options",
                             "options": [
@@ -1166,36 +1167,6 @@
                     }
                 ]
             },
-            "insider": {
-                "group": "Appeal withdrawn / allowed / remanded",
-                "mode": "chained",
-                "queries": [
-                    {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
-                        "model": "claude",
-                        "position": "none",
-                        "visible": false,
-                        "context": [
-                            "reasonsContext"
-                        ],
-                        "insertionQuestion": true
-                    },
-                    {
-                        "text": "Identify if the <Data> explicitly states that one of the reasons for allowing the appeal was that the appellant is not an insider. If yes, just return 'Yes' and nothing else. Otherwise, just return 'Unclear' and nothing else.",
-                        "position": "none",
-                        "model": "claude",
-                        "visible": true,
-                        "output": {
-                            "type": "options",
-                            "options": [
-                                "Yes",
-                                "Unclear"
-                            ]
-                        },
-                        "displayQuery": "Allowed because Appellant was not Insider"
-                    }
-                ]
-            },
             "upsi": {
                 "group": "Appeal withdrawn / allowed / remanded",
                 "mode": "chained",
@@ -1223,6 +1194,36 @@
                             ]
                         },
                         "displayQuery": "Allowed because Information was not UPSI"
+                    }
+                ]
+            },
+            "insider": {
+                "group": "Appeal withdrawn / allowed / remanded",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "model": "claude",
+                        "position": "none",
+                        "visible": false,
+                        "context": [
+                            "reasonsContext"
+                        ],
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "Identify if the <Data> explicitly states that one of the reasons for allowing the appeal was that the appellant is not an insider. If yes, just return 'Yes' and nothing else. Otherwise, just return 'Unclear' and nothing else.",
+                        "position": "none",
+                        "model": "claude",
+                        "visible": true,
+                        "output": {
+                            "type": "options",
+                            "options": [
+                                "Yes",
+                                "Unclear"
+                            ]
+                        },
+                        "displayQuery": "Allowed because Appellant was not Insider"
                     }
                 ]
             },
@@ -1316,6 +1317,36 @@
                     }
                 ]
             },
+            "noTradingOnUpsi": {
+                "group": "Appeal withdrawn / allowed / remanded",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "model": "claude",
+                        "position": "none",
+                        "visible": false,
+                        "context": [
+                            "reasonsContext"
+                        ],
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "Identify if the <Data> explicitly states that one of the reasons for allowing the appeal was that there was no trading of shares on the basis of unpublished sensitive information. If yes, just return 'Yes' and nothing else. Otherwise, just return 'Unclear' and nothing else.",
+                        "position": "none",
+                        "model": "claude",
+                        "visible": true,
+                        "output": {
+                            "type": "options",
+                            "options": [
+                                "Yes",
+                                "Unclear"
+                            ]
+                        },
+                        "displayQuery": "Allowed because no trading on basis of UPSI/ when UPSI was in existence"
+                    }
+                ]
+            },
             "penaltyAmountDepositedForAppeal": {
                 "group": "Sanctions and Costs",
                 "mode": "chained",
@@ -1334,7 +1365,7 @@
                         "text": "If the input explicitly states that a part penalty was paid by the appellant, just return 'Yes' and nothing else. If the input explicitly states that no part penalty was paid by the appellant, just return 'No' and nothing else. But if the input states that there is no information of a part penalty being paid by the appellant, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
-                        "displayQuery": "Part Penalty Amount Deposited for Filing Appeal:",
+                        "displayQuery": "SAT Ordered Part Penalty Amount Deposit for Appeal",
                         "output": {
                             "type": "options",
                             "options": [
@@ -1442,7 +1473,7 @@
                     {
                         "text": "If the <Data> explicitly states that the penalty was modified under section 15J(a), just return 'Yes'. If the <Data> explicitly  states that the penalty was not modified under section 15J(a) or <Data> states no mention about penalty being modified under section 15J(a), just return 'Unclear' and nothing else.",
                         "visible": true,
-                        "displayQuery": "Penalty Amount modified on the basis of s. 15J(a)",
+                        "displayQuery": "Penalty Amount Modified on Basis of S. 15J(a) - Amount of Disproportionate Gain or Unfair Advantage",
                         "model": "claude",
                         "output": {
                             "type": "options",
@@ -1476,7 +1507,7 @@
                     {
                         "text": "If the <Data> explicitly states that the penalty was modified under section 15J(b), just return 'Yes'. If the <Data> explicitly  states that the penalty was not modified under section 15J(b) or <Data> states no mention about penalty being modified under section 15J(b), just return 'Unclear' and nothing else.",
                         "visible": true,
-                        "displayQuery": "Penalty Amount modified on the basis of s. 15J(b)",
+                        "displayQuery": "Penalty Amount Modified on Basis of S. 15J(b) - Amount of Loss Caused to Investor or Group of Investors",
                         "model": "claude",
                         "output": {
                             "type": "options",
@@ -1511,7 +1542,7 @@
                         "text": "If the <Data> explicitly states that the penalty was modified under section 15J(c), just return 'Yes'. If the <Data> explicitly  states that the penalty was not modified under section 15J(c) or <Data> states no mention about penalty being modified under section 15J(c), just return 'Unclear' and nothing else.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Penalty Amount modified on the basis of s. 15J(c)",
+                        "displayQuery": "Penalty Amount Modified on Basis of S. 15J(c) - Not a Repetitive Default",
                         "output": {
                             "type": "options",
                             "options": [
@@ -1994,7 +2025,7 @@
                         "text": "If the <Data> explicitly states the time period of restraint from dealing in the securities of the Company, just return the time period without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "SAT Order Period of Restraint from Dealing in Securities"
+                        "displayQuery": "SAT Order Period of Restraint from Dealing in Securities of Relevant Company"
                     }
                 ]
             },
@@ -2016,7 +2047,7 @@
                         "text": "Just return the prohibition time period contained in the <Data> without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Directorship Prohibition (WTM):"
+                        "displayQuery": "WTM Order Period of Prohibition from Holding Directorship Position"
                     }
                 ]
             },
@@ -2038,7 +2069,7 @@
                         "text": "Just return the prohibition time period contained in the <Data> without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Directorship Prohibition (SAT):"
+                        "displayQuery": "SAT Order Period of Prohibition from Holding Directorship Position"
                     }
                 ]
             },
@@ -2060,7 +2091,7 @@
                         "text": "Just return the time period contained in the <Data> without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Bank Account Impounding (WTM):"
+                        "displayQuery": "WTM Order Period of Impounding of Bank Account"
                     }
                 ]
             },
@@ -2082,7 +2113,7 @@
                         "text": "Just return the time period contained in the <Data> without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Bank Account Impounding (SAT):"
+                        "displayQuery": "SAT Order Period of Impounding of Bank Account"
                     }
                 ]
             },
@@ -2104,7 +2135,7 @@
                         "text": "If the <Data> explicitly states the time period of prohibition from disposing of the assets, just return the time period without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Asset Disposal Prohibition (WTM):"
+                        "displayQuery": "WTM Order Period of Prohibition on Disposal of Assets"
                     }
                 ]
             },
@@ -2126,7 +2157,7 @@
                         "text": "If the <Data> explicitly states the time period of prohibition from disposing of the assets, just return the time period without a full sentence. If the <Data> states no information, just return 'Unclear'.",
                         "visible": true,
                         "model": "claude",
-                        "displayQuery": "Asset Disposal Prohibition (SAT):"
+                        "displayQuery": "SAT Order Period of Prohibition on Disposal of Assets"
                     }
                 ]
             },
@@ -2147,7 +2178,7 @@
                         "text": "If the <Data> states that there was no orders as to costs or no costs imposed, just return 'No'. If the <Data> states that there was order as to costs or costs were imposed, just return 'Yes'. But if the <Data> states no mention/information about costs, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
-                        "displayQuery": "Costs Ordered:",
+                        "displayQuery": "Costs Ordered",
                         "output": {
                             "type": "options",
                             "options": [
@@ -2176,7 +2207,7 @@
                         "text": "If the <Data> explicitly states that the costs have been imposed on the Appellant, just return 'Yes'. Otherwise, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
-                        "displayQuery": "Costs Ordered on Appellant:",
+                        "displayQuery": "Costs Ordered on Appellant",
                         "output": {
                             "type": "options",
                             "options": [
@@ -2204,7 +2235,7 @@
                         "text": "If the <Data> explicitly states that the costs have been imposed on the Respondent, just return 'Yes'. Otherwise, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
-                        "displayQuery": "Costs Ordered on Respondent:",
+                        "displayQuery": "Costs Ordered on Respondent",
                         "output": {
                             "type": "options",
                             "options": [
@@ -2232,7 +2263,7 @@
                         "text": "Just return the quantum of costs amount and nothing else. If the <Data> does not state the quantum of costs, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
-                        "displayQuery": "Quantum of Costs:"
+                        "displayQuery": "Quantum of Costs"
                     }
                 ]
             }
@@ -2363,11 +2394,14 @@
                     "appealDismissed",
                     "appealPartlyAllowed",
                     "appealFullyAllowed",
-                    "insider",
+                    "appealDisposed",
                     "upsi",
+                    "insider",
                     "communicationUPSI",
                     "preTradeClearance",
                     "codeOfConduct",
+                    "noTradingOnUpsi",
+                    "allowedAnotherReason",
                     "sanctionsModified",
                     "CostsOrdered",
                     "CostsOrdered_Appellant",
