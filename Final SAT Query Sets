@@ -227,15 +227,18 @@
             },
             "appealRemandReasonContext": {
                 "group": "Dependent Contexts",
-                "mode": "accumulateClaude",
+                "mode": "accumulateHaiku",
                 "queries": [
                     {
-                        "text": "<document> is an order by an Appellate Court. You need to determine whether the document explicitly states whether the appeals were remanded and the reason stated for the same. This is typically stated towards the end of the <document>. Identify for each appeal whether it was remanded and the reason for such remand. If the document does not explicitly use the words 'remanded', then mark it as 'unclear'. Do not make inferences about the status of the appeal unless explicitly stated.",
+                        "text": "In the <document>, the appeal(s) may or may not have been remanded by the Securities Appellate Tribunal. I want you to identify the reasons, if any, for remanding the appeal(s) as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned.",
                         "visible": false,
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and their disposal status. Ensure that you strictly adhere to the instructions. If the instructions ask you to check whether something is explicitly stated, ensure your response does not try to infer anything from the document to answer the question. Restrict your responses to the given document and don’t rely on any other knowledge."
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for remanding the appeals. Restrict your responses to the given document and don’t rely on any other knowledge."
                     },
                     {
-                        "text": "The <Data> states the information on the remand status and the reasons of the appeals. For each of the appeals in <context0>, identify its remand status and reason. If the <Data> does not state specific appeal numbers, mark each appeal number in <context0> with the same remand status.",
+                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states reasons for remanding for each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number]/[Year] - Reason(s) - details; 2. Appeal [Number]/[Year] - Reason(s) - details;...'. Ensure that the reasons are specifically listed for each appeal, even if the reasons are same as the previous appeal. Produce the above information as you receive in the <data>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
                         "context": [
                             "generalAppellantContext"
                         ],
@@ -299,6 +302,28 @@
                     },
                     {
                         "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states modfified sanctions details of each appeal. Using <context0> and the <Data>, identify and present the modified sanctions for each appellant of each appeal. Ensure that Modified Sanction(s) are specifically listed for each appeal, even if they are the same as those in a previous appeal. Ensure that Modified Sanction(s) are specifically listed for each Appellant, even if they are the same as those for other Appellants. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Details of sanctions imposed by SAT"
+                    }
+                ]
+            },
+            "sanctionsModReasonsContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateHaiku",
+                "queries": [
+                    {
+                        "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed in the impugned order by the Adjudicating Authority (AO) or WHole Time Member (WTM). I want you to identify the reasons, if any, for such modifications and the section under which modification is made as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons or section mentioned, record that no reasons or sections are mentioned.",
+                        "visible": false,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states reasons for modfifications of sanctions and the section under which the modifications of sanctions were made for each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Reason(s) - details, Section - details; 2. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Reason(s) - details, Section - details;...'. Ensure that the reasons and sections are specifically listed for each appeal, even if the reasons and sections are same as the previous appeal. Ensure that the reasons and sections are specifically listed for each Appellant, even if the reasons and sections are same as the previous appellant. Produce the above information as you receive in the <data>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
                         "context": [
                             "generalAppellantContext"
                         ],
@@ -1055,7 +1080,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input say about Appeal {arg1} being remanded or being sent to be re-decided and the reason given for the same? Do not draw inferences, state what the input says.",
+                        "text": "From the <context0>, find the reasons for remanding the appeal {arg1}.",
                         "position": "none",
                         "context": [
                             "appealRemandReasonContext"
@@ -1064,7 +1089,7 @@
                         "insertionQuestion": true
                     },
                     {
-                        "text": "If the <Data> states that appeal was remanded or was sent to be re-decided because show cause notice was not served sufficiently/properly, just return 'Yes'. But if the <Data> does not state any information about the appeal being remanded, just return 'Unclear' and nothing else.",
+                        "text": "If the <Data> states that appeal was remanded or was sent to be re-decided because show cause notice was not served, just return 'Yes' and nothing else. But if the <Data> does not state any reasons about the appeal being remanded, just return 'Unclear' and nothing else.",
                         "model": "claude",
                         "visible": true,
                         "displayQuery": "Remanded because Show Cause Notice Not Sufficiently Served",
@@ -1083,7 +1108,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input say about Appeal {arg1} being remanded or being sent to be re-decided and the reason given for the same? Do not draw inferences, state what the input says.",
+                        "text": "From the <context0>, find the reasons for remanding the appeal {arg1}. Do not draw inferences, state what the input says.",
                         "position": "none",
                         "context": [
                             "appealRemandReasonContext"
@@ -1092,8 +1117,15 @@
                         "insertionQuestion": true
                     },
                     {
-                        "text": "If the <Data> states that appeal was remanded or was sent to be re-decided because show cause notice was not served sufficiently/properly, just return 'Unclear'. If the <Data> states some other reason, just return the reason and nothing else. But if the <Data> does not state any information about the appeal being remanded, just return 'Unclear' and nothing else.",
+                        "text": "If the <Data> contains the terms 'show cause notice', just return 'Unclear' as the output and nothing else. If the <Data> states some other reason for the appeal to be remanded, just return the reason and nothing else. But if the <Data> does not state any reasons about the appeal being remanded, just return 'Unclear' and nothing else.",
+                        "model": "gpt",
+                        "position": "none",
+                        "visible": false
+                    },
+                    {
+                        "text": "If the <Data> states 'Unclear', just return 'Unclear' and nothing else other wise just reproduce the <Data>.",
                         "model": "claude",
+                        "position": "none",
                         "visible": true,
                         "displayQuery": "Remand Ground Other"
                     }
@@ -1523,11 +1555,11 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the <context0> state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
-                            "sanctionsModContext"
+                            "sanctionsModReasonsContext"
                         ],
                         "insertionQuestion": true
                     },
@@ -1557,11 +1589,11 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the <context0> state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
-                            "sanctionsModContext"
+                            "sanctionsModReasonsContext"
                         ],
                         "insertionQuestion": true
                     },
@@ -1591,11 +1623,11 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the <context0> state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
-                            "sanctionsModContext"
+                            "sanctionsModReasonsContext"
                         ],
                         "insertionQuestion": true
                     },
@@ -1610,6 +1642,41 @@
                         "visible": true,
                         "model": "claude",
                         "displayQuery": "Penalty Amount Modified on Basis of S. 15J(c) - Not a Repetitive Default",
+                        "output": {
+                            "type": "options",
+                            "options": [
+                                "Yes",
+                                "Unclear"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "penaltyAmountModifiedOtherReason": {
+                "group": "Sanctions and Costs",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "From the <context0>, find out the section under which the sanctions imposed on {arg1} were modified. If the sanctions were not modified, state in the output that the sanctions were not modified. If the section under which the sanctions were modified is not present, state in the output that the section under which the sanctions were modified is not present.",
+                        "visible": false,
+                        "position": "none",
+                        "model": "claude",
+                        "context": [
+                            "sanctionsModReasonsContext"
+                        ],
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "If the <Data> explicitly mentions section 15J(a) or section 15J(b) or section 15J(c) under which the sanctions have been modified, just return 'NA' and nothing else. If the <Data> explicitly mentions that the sanctions were not modified or that the section under which the sanctions were modified is not present, just return 'NA' and nothing else. But if the <Data> explicitly mentions any other section under which the sanctions were modified instead of section 15J(a) or section 15J(b) or section 15J(c), just return the section in the output and nothing else.",
+                        "visible": false,
+                        "position": "none",
+                        "model": "claude"
+                    },
+                    {
+                        "text": "If the <Data> explicitly states 'NA', just return 'Unclear' and nothing else. If the <Data> explicitly states a section number, just return 'Yes' and nothing else.",
+                        "visible": true,
+                        "model": "claude",
+                        "displayQuery": "Penalty Amount Modified for any other reason",
                         "output": {
                             "type": "options",
                             "options": [
@@ -2228,6 +2295,28 @@
                     }
                 ]
             },
+            "penaltyAmountModifiedReason": {
+                "group": "Sanctions and Costs",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "From the <context0>, find out the reasons given for modification of sanctions imposed on {arg1}.",
+                        "visible": false,
+                        "position": "none",
+                        "model": "claude",
+                        "context": [
+                            "sanctionsModReasonsContext"
+                        ],
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "If the <Data> explicitly states the reasons for modification of sanctions, reiterate just the reasons in the output and nothing else. If the <Data> does not contain any reasons for modification of sanctions, return 'Unclear' and nothing else.",
+                        "visible": true,
+                        "model": "claude",
+                        "displayQuery": "SAT Reasons for Variation in Sanctions"
+                    }
+                ]
+            },
             "CostsOrdered": {
                 "group": "Costs Ordered",
                 "mode": "chained",
@@ -2382,6 +2471,7 @@
                     "penaltyAmountModifiedS_15J(a)",
                     "penaltyAmountModifiedS_15J(b)",
                     "penaltyAmountModifiedS_15J(c)",
+                    "penaltyAmountModifiedOtherReason",
                     "AO_WTMOrderRateOfInterestOnFailureToPayPenalty",
                     "SATOrderRateOfInterestOnFailureToPayPenalty",
                     "PenaltyJointAndSeveral_AO_WTM",
@@ -2406,7 +2496,8 @@
                     "BankAccountImpounding_WTM",
                     "BankAccountImpounding_SAT",
                     "AssetDisposalProhibition_WTM",
-                    "AssetDisposalProhibition_SAT"
+                    "AssetDisposalProhibition_SAT",
+                    "penaltyAmountModifiedReason"
                 ]
             },
             "respondents": {
@@ -2437,7 +2528,7 @@
                     "mode": "chained",
                     "queries": [
                         {
-                            "text": "Generate a list of Appeal Numbers separated by newlines from the provided input in the format '238/2020'.",
+                            "text": "From <context0>, generate a list of just the Appeal Number(s) separated by newlines in the format '238/2020'.",
                             "position": "none",
                             "context": [
                                 "generalAppellantContext"
