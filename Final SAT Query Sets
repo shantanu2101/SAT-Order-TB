@@ -1446,6 +1446,42 @@
                     }
                 ]
             },
+            "allowedForAnotherReason": {
+                "group": "Appeal withdrawn / allowed / remanded",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "model": "claude",
+                        "position": "none",
+                        "visible": false,
+                        "context": [
+                            "reasonsContext"
+                        ],
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "Identify if the <Data> explicitly states that the reasons for allowing the appeal was one of the following: the information is not Unpublished Price Sensitive Information (UPSI), the appellant is not an insider, the Unpublished Price Sensitive Information (UPSI) was not communicated, pre trade clearance was secured or there was no requirement of pre trade clearance, there was no violation of Code of Conduct/Code/Model Code, or there was no trading of shares on the basis of unpublished sensitive information. If yes, just return 'Yes' and nothing else. Otherwise, just return whatever you received in <Data> as the output.",
+                        "position": "none",
+                        "model": "gpt",
+                        "visible": false
+                    },
+                    {
+                        "text": "In the <Data>, check if it mentions the reason for allowing the appeal. If yes, just return 'Yes' and nothing else. If <Data> states no reason for allowing the appeal, just return 'Unclear' and nothing else.",
+                        "position": "none",
+                        "model": "claude",
+                        "visible": true,
+                        "output": {
+                            "type": "options",
+                            "options": [
+                                "Yes",
+                                "Unclear"
+                            ]
+                        },
+                        "displayQuery": "Allowed for any other reason"
+                    }
+                ]
+            },
             "penaltyAmountDepositedForAppeal": {
                 "group": "Sanctions and Costs",
                 "mode": "chained",
@@ -2560,7 +2596,7 @@
                     "preTradeClearance",
                     "codeOfConduct",
                     "noTradingOnUpsi",
-                    "allowedAnotherReason",
+                    "allowedForAnotherReason",
                     "sanctionsModified",
                     "CostsOrdered",
                     "CostsOrdered_Appellant",
