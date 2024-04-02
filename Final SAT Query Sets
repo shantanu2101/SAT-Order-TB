@@ -225,6 +225,25 @@
                     }
                 ]
             },
+            "appealRemandReasonContext": {
+                "group": "Dependent Contexts",
+                "mode": "accumulateClaude",
+                "queries": [
+                    {
+                        "text": "<document> is an order by an Appellate Court. You need to determine whether the document explicitly states whether the appeals were remanded and the reason stated for the same. This is typically stated towards the end of the <document>. Identify for each appeal whether it was remanded and the reason for such remand. If the document does not explicitly use the words 'remanded', then mark it as 'unclear'. Do not make inferences about the status of the appeal unless explicitly stated.",
+                        "visible": false,
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and their disposal status. Ensure that you strictly adhere to the instructions. If the instructions ask you to check whether something is explicitly stated, ensure your response does not try to infer anything from the document to answer the question. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "The <Data> states the information on the remand status and the reasons of the appeals. For each of the appeals in <context0>, identify its remand status and reason. If the <Data> does not state specific appeal numbers, mark each appeal number in <context0> with the same remand status.",
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "visible": true,
+                        "displayQuery": "Remand status and reasons of the appeals"
+                    }
+                ]
+            },
             "reasonsContext": {
                 "group": "Dependent Contexts",
                 "mode": "accumulateClaude",
@@ -1031,7 +1050,55 @@
                     }
                 ]
             },
-            
+            "appealRemandedSCN": {
+                "group": "Appeal withdrawn / allowed / remanded",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "What does the input say about Appeal {arg1} being remanded or being sent to be re-decided and the reason given for the same? Do not draw inferences, state what the input says.",
+                        "position": "none",
+                        "context": [
+                            "appealRemandReasonContext"
+                        ],
+                        "visible": false,
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "If the <Data> states that appeal was remanded or was sent to be re-decided because show cause notice was not served sufficiently/properly, just return 'Yes'. But if the <Data> does not state any information about the appeal being remanded, just return 'Unclear' and nothing else.",
+                        "model": "claude",
+                        "visible": true,
+                        "displayQuery": "Remanded because Show Cause Notice Not Sufficiently Served",
+                        "output": {
+                            "type": "options",
+                            "options": [
+                                "Yes",
+                                "Unclear"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "appealRemandedOtherGround": {
+                "group": "Appeal withdrawn / allowed / remanded",
+                "mode": "chained",
+                "queries": [
+                    {
+                        "text": "What does the input say about Appeal {arg1} being remanded or being sent to be re-decided and the reason given for the same? Do not draw inferences, state what the input says.",
+                        "position": "none",
+                        "context": [
+                            "appealRemandReasonContext"
+                        ],
+                        "visible": false,
+                        "insertionQuestion": true
+                    },
+                    {
+                        "text": "If the <Data> states that appeal was remanded or was sent to be re-decided because show cause notice was not served sufficiently/properly, just return 'Unclear'. If the <Data> states some other reason, just return the reason and nothing else. But if the <Data> does not state any information about the appeal being remanded, just return 'Unclear' and nothing else.",
+                        "model": "claude",
+                        "visible": true,
+                        "displayQuery": "Remand Ground Other"
+                    }
+                ]
+            },
             "orderQuashing": {
                 "group": "Appeal withdrawn / allowed / remanded",
                 "mode": "chained",
@@ -1456,7 +1523,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
@@ -1490,7 +1557,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
@@ -1524,7 +1591,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "What does the input state about about change or modification of the Penalty amount imposed on {arg1}?",
+                        "text": "What does the input state about change or modification of the Penalty amount imposed on {arg1}?",
                         "visible": false,
                         "position": "none",
                         "context": [
@@ -2390,11 +2457,12 @@
                     "delayFiling",
                     "delayCondoned",
                     "appealRemanded",
+                    "appealRemandedSCN",
+                    "appealRemandedOtherGround",
                     "orderQuashing",
                     "appealDismissed",
                     "appealPartlyAllowed",
                     "appealFullyAllowed",
-                    "appealDisposed",
                     "upsi",
                     "insider",
                     "communicationUPSI",
