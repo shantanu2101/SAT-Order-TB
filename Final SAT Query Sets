@@ -243,7 +243,7 @@
                             "generalAppellantContext"
                         ],
                         "visible": true,
-                        "displayQuery": "Remand status and reasons of the appeals"
+                        "displayQuery": "Reasons for remadning of the appeal"
                     }
                 ]
             },
@@ -328,7 +328,7 @@
                             "generalAppellantContext"
                         ],
                         "visible": true,
-                        "displayQuery": "Details of sanctions imposed by SAT"
+                        "displayQuery": "Reasons given by the SAT for modification of Sanctions"
                     }
                 ]
             },
