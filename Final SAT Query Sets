@@ -245,7 +245,7 @@
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "<document> is an order by an Appellate Court. <context0> states all the appeal numbers involved in the <document>. I want you to identify and produce the reasons stated in the <document> for allowing the appeal for each appeal number mentioned in <context0>. If the appeal has been dismissed, just state that the appeal was dismissed and nothing else. Ensure that the reasons/dismissal are specifically listed for each appeal, even if they are the same as those in a previous appeal. State all the appeal numbers mentioned in <context0> and the reasons/dismissal.",
+                        "text": "<document> is an order by an Appellate Court. <context0> states all the appeal numbers involved in the <document>. I want you to identify and produce the reasons stated in the <document> for allowing the appeal for each appeal number mentioned in <context0>. If the appeal has been dismissed, just state that the appeal was dismissed and do not capture the reasons for it. Ensure that the reasons/dismissal are specifically listed for each appeal, even if they are the same as those in a previous appeal. State all the appeal numbers mentioned in <context0> and the reasons/dismissal.",
                         "visible": false,
                         "context": [
                             "generalAppellantContext"
@@ -305,22 +305,15 @@
             },
             "sanctionsModReasonsContext": {
                 "group": "Dependent Contexts",
-                "mode": "accumulateHaiku",
+                "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed in the impugned order by the Adjudicating Authority (AO) or WHole Time Member (WTM). I want you to identify the reasons, if any, for such modifications and the section under which modification is made as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons or section mentioned, record that no reasons or sections are mentioned.",
-                        "visible": false,
-                        "context": [
-                            "generalAppellantContext"
-                        ],
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge."
-                    },
-                    {
-                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states reasons for modfifications of sanctions and the section under which the modifications of sanctions were made for each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Reason(s) - details, Section - details; 2. Appeal [Number]/[Year] - (i) Appellant: [Appellant Name] (Appellant Number), Reason(s) - details, Section - details;...'. Ensure that the reasons and sections are specifically listed for each appeal, even if the reasons and sections are same as the previous appeal. Ensure that the reasons and sections are specifically listed for each Appellant, even if the reasons and sections are same as the previous appellant. Produce the above information as you receive in the <data>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
-                        "context": [
-                            "generalAppellantContext"
-                        ],
+                        "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed by the Adjudicating Authority (AO) or Whole Time Member (WTM). I want you to identify the reasons, if any, given by the Tribunal for such modifications as stated in the <document> for each of the appeal numbers mentioned in <context0>. Do not confuse with the reasons for allowing/dismissal of the appeal. Only capture the reasons for modification of the sanctions and nothing else. Ignore the modified sanctions as well. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned.",
                         "visible": true,
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge.",
                         "displayQuery": "Reasons given by the SAT for modification of Sanctions"
                     }
                 ]
@@ -2324,7 +2317,7 @@
                     }
                 ]
             },
-            "penaltyAmountModifiedReason": {
+            "sanctionsModifiedReason": {
                 "group": "Sanctions and Costs",
                 "mode": "chained",
                 "queries": [
@@ -2525,8 +2518,8 @@
                     "BankAccountImpounding_WTM",
                     "BankAccountImpounding_SAT",
                     "AssetDisposalProhibition_WTM",
-                    "AssetDisposalProhibition_SAT",
-                    "penaltyAmountModifiedReason"
+                    "AssetDisposalProhibition_SAT"
+                    
                 ]
             },
             "respondents": {
@@ -2591,6 +2584,7 @@
                     "noTradingOnUpsi",
                     "allowedForAnotherReason",
                     "sanctionsModified",
+                    "sanctionsModifiedReason",
                     "CostsOrdered",
                     "CostsOrdered_Appellant",
                     "CostsForRespondents",
