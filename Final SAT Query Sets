@@ -227,23 +227,16 @@
             },
             "appealRemandReasonContext": {
                 "group": "Dependent Contexts",
-                "mode": "accumulateHaiku",
+                "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "In the <document>, the appeal(s) may or may not have been remanded by the Securities Appellate Tribunal. I want you to identify the reasons, if any, for remanding the appeal(s) as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned.",
-                        "visible": false,
-                        "context": [
-                            "generalAppellantContext"
-                        ],
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for remanding the appeals. Restrict your responses to the given document and don’t rely on any other knowledge."
-                    },
-                    {
-                        "text": "<context0> states the appeal numbers and Appellants involved in all these appeals. The <Data> states reasons for remanding for each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number]/[Year] - Reason(s) - details; 2. Appeal [Number]/[Year] - Reason(s) - details;...'. Ensure that the reasons are specifically listed for each appeal, even if the reasons are same as the previous appeal. Produce the above information as you receive in the <data>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
-                        "context": [
-                            "generalAppellantContext"
-                        ],
+                        "text": "In the <document>, the appeals may or may not have been remanded by the Securities Appellate Tribunal. I want you to identify the reasons, if any, for remanding the appeal(s) as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned. No need to mention anything about allowing/dismissal of the appeal.",
                         "visible": true,
-                        "displayQuery": "Reasons for remadning of the appeal"
+                        "context": [
+                            "generalAppellantContext"
+                        ],
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for remanding the appeals. Restrict your responses to the given document and don’t rely on any other knowledge.",
+                        "displayQuery": "Remand reasons for appeals"
                     }
                 ]
             },
