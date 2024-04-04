@@ -231,11 +231,15 @@
                 "queries": [
                     {
                         "text": "In the <document>, the appeals may or may not have been remanded by the Securities Appellate Tribunal. I want you to identify the reasons, if any, for remanding the appeal(s) as stated in the <document> for each of the appeal numbers mentioned in <context0>. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned. No need to mention anything about allowing/dismissal of the appeal.",
-                        "visible": true,
+                        "visible": false,
                         "context": [
                             "generalAppellantContext"
                         ],
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for remanding the appeals. Restrict your responses to the given document and don’t rely on any other knowledge.",
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for remanding the appeals. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers. The <Data> states the reasons for remand of the appeal. Using <context0> and the <Data>, produce the reasons for remand of each appeal separately. Do not say that the reasons are same as above.",
+                        "visible": true,
                         "displayQuery": "Remand reasons for appeals"
                     }
                 ]
@@ -245,7 +249,7 @@
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "<document> is an order by an Appellate Court. <context0> states all the appeal numbers involved in the <document>. I want you to identify and produce the reasons stated in the <document> for allowing the appeal for each appeal number mentioned in <context0>. If the appeal has been dismissed, just state that the appeal was dismissed and do not capture the reasons for it. Ensure that the reasons/dismissal are specifically listed for each appeal, even if they are the same as those in a previous appeal. State all the appeal numbers mentioned in <context0> and the reasons/dismissal.",
+                        "text": "<document> is an order by Securities Appellate Tribunal (Tribunal). The Tribunal has either allowed or dismissed the appeals in <document>. <context0> states all the appeal numbers involved in the <document>. I want you to identify the reasons given by the Tribunal for allowing the appeals as stated in the <document> for each appeal number mentioned in <context0>. If the appeal has been dismissed, just state 'NA' for that appeal number and ignore the reasons for the dismissal.",
                         "visible": false,
                         "context": [
                             "generalAppellantContext"
@@ -253,7 +257,7 @@
                         "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the appeals involved in the judgement and the reasons given by the Tribunal for allowing these appeals. Restrict your responses to the given document and don’t rely on any other knowledge."
                     },
                     {
-                        "text": "<context0> states the appeal numbers. The <Data> states the reasons for allowing or dismissal of each appeal. Using <context0> and the <Data>, present the information as it is in a numbered list following this format: '1. Appeal [Number] of [Year]: Reasons for allowing the appeal - [details]; 2. Appeal [Number] of [Year]: Reasons for allowing the appeal - [details];'. Ensure that the reasons are specifically listed for each appeal, even if they are the same as those in a previous appeal. Produce the above information as you receive in the <document>. Do not make any inferences. The final output should be only the numbered list and nothing else.",
+                        "text": "<context0> states the appeal numbers. The <Data> states the reasons for allowing of each appeal. Using <context0> and the <Data>, produce the reasons for allowing each appeal separately. Do not say that the reasons are same as above.",
                         "visible": true,
                         "displayQuery": "Reasons for allowing the Appeals"
                     }
@@ -309,11 +313,15 @@
                 "queries": [
                     {
                         "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed by the Adjudicating Authority (AO) or Whole Time Member (WTM). I want you to identify the reasons, if any, given by the Tribunal for such modifications as stated in the <document> for each of the appeal numbers mentioned in <context0>. If the <document> mentions the sections under which the modifications were made, capture them. Do not confuse with the reasons for allowing/dismissal of the appeal. Only capture the reasons for modification of the sanctions and sections. Ignore the modified sanctions as well. If for any appeal number there is no such reasons mentioned or sections mentioned, record that no reasons or sections are mentioned.",
-                        "visible": true,
+                        "visible": false,
                         "context": [
                             "generalAppellantContext"
                         ],
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons and the sections under which the modifications are made given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge.",
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons and the sections under which the modifications are made given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge."
+                    },
+                    {
+                        "text": "<context0> states the appeal numbers. The <Data> states the reasons and sections under which the sanctions were modified for each appeal. Using <context0> and the <Data>, produce the reasons and sections for modification of sanctions for each appeal separately. Do not say that the reasons are same as above.",
+                        "visible": true,
                         "displayQuery": "Reasons given by the SAT for modification of Sanctions"
                     }
                 ]
@@ -1094,7 +1102,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "From the <context0>, find the reasons for remanding the appeal {arg1}. Do not draw inferences, state what the input says.",
+                        "text": "From the <context0>, find the reasons for remanding the appeal {arg1}. Do not draw inferences, state what the <Data> says.",
                         "position": "none",
                         "context": [
                             "appealRemandReasonContext"
@@ -1257,7 +1265,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1287,7 +1295,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1317,7 +1325,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1347,7 +1355,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1377,7 +1385,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1407,7 +1415,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "Identify the reason given by the Tribunal for allowing the appeal in Appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1437,7 +1445,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return that no information available.",
+                        "text": "From <context0>, identify the reason given by the Tribunal for allowing the appeal {arg1}. But if the appeal was dismissed, just return NA.",
                         "model": "claude",
                         "position": "none",
                         "visible": false,
@@ -1447,13 +1455,13 @@
                         "insertionQuestion": true
                     },
                     {
-                        "text": "Identify if the <Data> explicitly states that the reasons for allowing the appeal was one of the following: the information is not Unpublished Price Sensitive Information (UPSI), the appellant is not an insider, the Unpublished Price Sensitive Information (UPSI) was not communicated, pre trade clearance was secured or there was no requirement of pre trade clearance, there was no violation of Code of Conduct/Code/Model Code, or there was no trading of shares on the basis of unpublished sensitive information. If yes, just return 'Yes' and nothing else. Otherwise, just return whatever you received in <Data> as the output.",
+                        "text": "Identify if the <Data> explicitly states that the reasons for allowing the appeal was one of the following: the information is not Unpublished Price Sensitive Information (UPSI), the appellant is not an insider, the Unpublished Price Sensitive Information (UPSI) was not communicated, pre trade clearance was secured or there was no requirement of pre trade clearance, there was no violation of Code of Conduct/Code/Model Code, or there was no trading of shares on the basis of unpublished sensitive information. If yes, return that no new reasons have been found as the output. But if <Data> states some reasons other than the ones mentioned above, return that new reason has been found as the output. But if the <Data> states no information available, return that no information available.",
                         "position": "none",
                         "model": "gpt",
                         "visible": false
                     },
                     {
-                        "text": "In the <Data>, check if it mentions the reason for allowing the appeal. If yes, just return 'Yes' and nothing else. If <Data> states no reason for allowing the appeal, just return 'Unclear' and nothing else.",
+                        "text": "In the <Data> states no information available or the <Data> states that no new reasons have been found, just return 'Unclear' and nothing else. But if the <Data> states that a new reason has been found, just return 'Yes' and nothing else.",
                         "position": "none",
                         "model": "claude",
                         "visible": true,
@@ -1679,7 +1687,7 @@
                 "mode": "chained",
                 "queries": [
                     {
-                        "text": "From the <context0>, find out the section under which the sanctions imposed on {arg1} were modified. If the sanctions were not modified, state in the output that the sanctions were not modified. If the section under which the sanctions were modified is not present, state in the output that the section under which the sanctions were modified is not present.",
+                        "text": "From the <context0>, find out the reasons and sections for which the sanctions imposed on {arg1} were modified. If the <Data> contains no reason or sections for modification of sanctions, return that the no information available.",
                         "visible": false,
                         "position": "none",
                         "model": "claude",
@@ -1689,13 +1697,13 @@
                         "insertionQuestion": true
                     },
                     {
-                        "text": "If the <Data> explicitly mentions section 15J(a) or section 15J(b) or section 15J(c) under which the sanctions have been modified, just return 'NA' and nothing else. If the <Data> explicitly mentions that the sanctions were not modified or that the section under which the sanctions were modified is not present, just return 'NA' and nothing else. But if the <Data> explicitly mentions any other section under which the sanctions were modified instead of section 15J(a) or section 15J(b) or section 15J(c), just return the section in the output and nothing else.",
+                        "text": "If the <Data> explicitly mentions section 15J(a) or section 15J(b) or section 15J(c) under which the sanctions have been modified, return that no new reasons have been found. But if <Data> states some section or reason other than the ones mentioned above, return that new reason has been found as the output. But if the <Data> states no information available, return that no information available.",
                         "visible": false,
                         "position": "none",
                         "model": "claude"
                     },
                     {
-                        "text": "If the <Data> explicitly states 'NA', just return 'Unclear' and nothing else. If the <Data> explicitly states a section number, just return 'Yes' and nothing else.",
+                        "text": "In the <Data> states no information available or the <Data> states that no new reasons have been found, just return 'Unclear' and nothing else. But if the <Data> states that a new reason has been found, just return 'Yes' and nothing else.",
                         "visible": true,
                         "model": "claude",
                         "displayQuery": "Penalty Amount Modified for any other reason",
