@@ -308,12 +308,12 @@
                 "mode": "accumulateClaude",
                 "queries": [
                     {
-                        "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed by the Adjudicating Authority (AO) or Whole Time Member (WTM). I want you to identify the reasons, if any, given by the Tribunal for such modifications as stated in the <document> for each of the appeal numbers mentioned in <context0>. Do not confuse with the reasons for allowing/dismissal of the appeal. Only capture the reasons for modification of the sanctions and nothing else. Ignore the modified sanctions as well. If for any appeal number there is no such reasons mentioned, record that no reasons are mentioned.",
+                        "text": "In the <document>, the Securties Appellate Tribunal (Tribunal) might have modified the sanctions imposed by the Adjudicating Authority (AO) or Whole Time Member (WTM). I want you to identify the reasons, if any, given by the Tribunal for such modifications as stated in the <document> for each of the appeal numbers mentioned in <context0>. If the <document> mentions the sections under which the modifications were made, capture them. Do not confuse with the reasons for allowing/dismissal of the appeal. Only capture the reasons for modification of the sanctions and sections. Ignore the modified sanctions as well. If for any appeal number there is no such reasons mentioned or sections mentioned, record that no reasons or sections are mentioned.",
                         "visible": true,
                         "context": [
                             "generalAppellantContext"
                         ],
-                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge.",
+                        "systemPrompt": "You are an expert at reading court judgements and identifying the details of the judgement. You will be given a document, from which you need to identify the reasons and the sections under which the modifications are made given by the Securities Appellate Tribunal (SAT/Tribunal) for modification of sanctions that were imposed on the Appellants. Restrict your responses to the given document and don’t rely on any other knowledge.",
                         "displayQuery": "Reasons given by the SAT for modification of Sanctions"
                     }
                 ]
